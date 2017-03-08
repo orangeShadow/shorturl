@@ -12,6 +12,7 @@ use AppBundle\Entity\ShortUrl;
 
 class ShortUrlController extends Controller
 {
+
     /**
      * Список url
      * @Route("/shorturl", name="urlList")
@@ -32,16 +33,27 @@ class ShortUrlController extends Controller
      */
     public function postUrlAction(Request $request)
     {
+
         try {
+            $post = json_decode($request->getContent());
+
+            if(!empty($post->origin_url)) {
+                $originUlr  = $post->origin_url;
+            } else {
+                $originUlr = $request->get('origin_url',null);
+            }
+
+            if(!empty($post->slug)) {
+                $slug  = $post->slug;
+            } else {
+                $slug = $request->get('slug',null);
+            }
+
             $shortUrl = new ShortUrl();
 
-            $shortUrl->setOriginUrl($request->get('origin_url'));
+            $shortUrl->setOriginUrl($originUlr);
 
-            if(!empty($request->get('slug'))) {
-                $shortUrl->setSlug($request->get('slug'));
-            } else {
-                $shortUrl->setSlug();
-            }
+            $shortUrl->setSlug($slug);
 
             $validator = $this->get('validator');
             $errors = $validator->validate($shortUrl);
@@ -49,7 +61,10 @@ class ShortUrlController extends Controller
             if (count($errors) > 0) {
                 $response = [];
                 foreach ($errors as $error) {
-                    $response[$error->getPropertyPath()] = $error->getMessage();
+                    $index = $error->getPropertyPath();
+                    if ( !isset($response[$index]) ) {
+                        $response[$error->getPropertyPath()] = $error->getMessage();
+                    }
                 }
 
                 return new JsonResponse($response,422);
@@ -100,7 +115,7 @@ class ShortUrlController extends Controller
 
 
     /**
-     * @Route("/{slug}")
+     * @Route("/{slug}" , name = "shortLink")
      */
     public function getUrlBySlug($slug)
     {

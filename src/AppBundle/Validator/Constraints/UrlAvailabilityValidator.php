@@ -13,14 +13,10 @@ class UrlAvailabilityValidator extends ConstraintValidator
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
         curl_exec($ch);
 
-        if (curl_errno($ch)) {
+        if (curl_errno($ch) || curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }
-
-        if (curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200)
-            $this->context->buildViolation($constraint->message)
-                ->addViolation();
 
         curl_close($ch);
 

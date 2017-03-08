@@ -8,6 +8,8 @@ use AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Carbon\Carbon;
+
 
 /**
  * ShortUrl
@@ -112,7 +114,14 @@ class ShortUrl implements JsonSerializable
      */
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        $date = Carbon::parse($this->createdAt->format("Y-m-d H:i:s"));
+
+        if($date->diffInHours(Carbon::now()) < 24) {
+            return $date->format('d.m.y H:i:s');
+        } else {
+            return $date->diffForHumans(Carbon::now());
+        }
+
     }
 
     /**
