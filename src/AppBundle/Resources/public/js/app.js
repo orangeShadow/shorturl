@@ -58,11 +58,12 @@
                         } else {
                             $scope.error[e] = response.data[e];
                         }
+
+                        if(e=='enable_slug' && $scope.enable_slug==false) {
+                            sweetAlert("Oops...", "Generated slug was busy, can you repeat your reqeust, or enter your slug manual!", "error");
+                        }
                     }
 
-                    if($scope.enable_slug==false) {
-                        sweetAlert("Oops...", "Generated slug was busy, can you repeat your reqeust, or enter your slug manual!", "error");
-                    }
 
                 } else {
                     sweetAlert("Oops...", "Something went wrong!", "error");
