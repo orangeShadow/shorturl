@@ -1,0 +1,26 @@
+AppBundle\Entity\ShortUrl:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\ShortUrlRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        originUrl:
+            type: text
+            column: origin_url
+        slug:
+            type: string
+            length: '8'
+            unique: true
+        createdAt:
+            type: datetime
+            column: created_at
+            gedmo:
+                timestampable:
+                    on: create
+
+    lifecycleCallbacks: {  }
